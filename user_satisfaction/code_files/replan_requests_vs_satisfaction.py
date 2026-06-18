@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-df = pd.read_json("C:\\Users\\bhashitha\\OneDrive\\Documents\\4th-yr-1st-sem\\research\\tourism research\\results\\user_satisfaction_results.json")
+df = pd.read_json("user_satisfaction_results.json")
 
 sns.scatterplot(x="replan_requests", y="overall_satisfaction", data=df)
 plt.title("Replan Requests vs Satisfaction")

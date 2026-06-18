@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-df = pd.read_json("C:\\Users\\bhashitha\\OneDrive\\Documents\\4th-yr-1st-sem\\research\\tourism research\\results\\resource_optimization_results.json")
+df = pd.read_json("resource_optimization_results.json")
 
 sns.lineplot(x="run_id", y="total_api_calls", data=df)
 plt.title("Total API Calls Across Runs")

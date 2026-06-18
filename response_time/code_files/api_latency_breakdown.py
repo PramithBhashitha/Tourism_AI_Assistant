@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-df = pd.read_json("C:\\Users\\bhashitha\\OneDrive\\Documents\\4th-yr-1st-sem\\research\\tourism research\\results\\response_time_results.json")
+df = pd.read_json("response_time_results.json")
 
 api_cols = [
     "flight_api_latency_ms",
