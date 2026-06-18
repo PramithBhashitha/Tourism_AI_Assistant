@@ -14,7 +14,7 @@
       ],
       "id": "226aa48d-ff7a-4807-bdbe-17e446ba49f2",
       "name": "When chat message received",
-      "webhookId": "cf980f48-eb04-4234-aa8e-9dcee2775e07"
+      "webhookId": null
     },
     {
       "parameters": {
@@ -48,12 +48,7 @@
       ],
       "id": "f4f48555-4f87-46cb-b449-7f7882956cda",
       "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "biEXWtHpc45eoKvG",
-          "name": "OpenAI account 3"
-        }
-      }
+      "credentials": null
     },
     {
       "parameters": {
@@ -86,12 +81,7 @@
       ],
       "id": "73063e44-81e3-4976-95ab-1e865e3e2ec5",
       "name": "create doc",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "lDPp29REBJalefCk",
-          "name": "Google Docs OAuth2 API"
-        }
-      }
+      "credentials": null
     },
     {
       "parameters": {
@@ -118,12 +108,7 @@
       ],
       "id": "692b7d62-551e-4dee-9cad-dc78192b5c29",
       "name": "update doc",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "lDPp29REBJalefCk",
-          "name": "Google Docs OAuth2 API"
-        }
-      }
+      "credentials": null
     },
     {
       "parameters": {
@@ -144,12 +129,7 @@
       ],
       "id": "3f465231-67a6-470a-919f-cf6dd0283b69",
       "name": "OpenAI Chat Model1",
-      "credentials": {
-        "openAiApi": {
-          "id": "biEXWtHpc45eoKvG",
-          "name": "OpenAI account 3"
-        }
-      }
+      "credentials": null
     },
     {
       "parameters": {
@@ -188,12 +168,7 @@
         -3984,
         -144
       ],
-      "credentials": {
-        "openAiApi": {
-          "id": "biEXWtHpc45eoKvG",
-          "name": "OpenAI account 3"
-        }
-      }
+      "credentials": null
     },
     {
       "parameters": {
@@ -270,12 +245,7 @@
           "id": "biEXWtHpc45eoKvG",
           "name": "OpenAI account 3"
         }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Destination: {{ $node[\"Convert to Airport Codes\"].json.destination }}\nDates: {{ $node[\"Convert to Airport Codes\"].json.departure_date }} to {{ $node[\"Convert to Airport Codes\"].json.return_date }}\nTravelers: {{ $node[\"Convert to Airport Codes\"].json.travelers.count }}\nTotal Trip Budget: {{ $node[\"Convert to Airport Codes\"].json.budget }}\n\nPREVIOUS AGENT DECISION (FLIGHT):\n{{ $node[\"flight schedule agent\"].json.output }}\n\nJUDGE FEEDBACK: {{ $json.feedback || \"None\" }}",
+      }null "text": "=Destination: {{ $node[\"Convert to Airport Codes\"].json.destination }}\nDates: {{ $node[\"Convert to Airport Codes\"].json.departure_date }} to {{ $node[\"Convert to Airport Codes\"].json.return_date }}\nTravelers: {{ $node[\"Convert to Airport Codes\"].json.travelers.count }}\nTotal Trip Budget: {{ $node[\"Convert to Airport Codes\"].json.budget }}\n\nPREVIOUS AGENT DECISION (FLIGHT):\n{{ $node[\"flight schedule agent\"].json.output }}\n\nJUDGE FEEDBACK: {{ $json.feedback || \"None\" }}",
         "options": {
           "systemMessage": "You are the Resort Negotiation Agent. Your goal is to select the BEST accommodation that fits the REMAINING budget.\n\nSTEP 1: Calculate Remaining Budget\n- Read the \"Selected Flight\" cost from the Flight Agent's proposal.\n- Subtract that cost from the Total Trip Budget. This is your \"Resort & Activities Ceiling.\"\n\nSTEP 2: Selection Logic\n- Use your tool to find properties in the destination.\n- Filter out any property where the \"total_rate\" exceeds 70% of your remaining budget (leave room for the Activities Agent!).\n- If \"Judge Feedback\" says \"Over Budget,\" you MUST select a cheaper property (e.g., a Villa or a 3-star hotel instead of a 5-star resort).\n- If the Flight arrives late (after 20:00), prioritize properties with a 24-hour front desk. You MUST explicitly state in your output that it is a \"full-service hotel\" so the Judge knows it is safe for late arrivals.\n\nSTEP 3: Output Format\nYou MUST provide a JSON header for the Judge, followed by the formatted proposal.\n\nCRITICAL: Read the feedback carefully. If the Judge explicitly directs its feedback to the \"Flight Agent\" or \"Activities Agent\", you MUST NOT change your selection. Output the exact same hotel, cost, and JSON header you used in the previous round.\n\n---START OF OUTPUT---\n{\n  \"selected_resort_cost\": [Total price for the full stay as a number],\n  \"property_name\": \"[Name]\",\n  \"star_rating\": [Number],\n  \"remaining_for_activities\": [Remaining Budget - Resort Cost]\n}\n\nAccommodation Proposal:\n1. [Hotel Name] (Clickable Link)\n[Image HTML]\n- Rating: [Rating]\n- Total Stay Cost: $[TOTAL_PRICE]\n- Why this fits: [Explain how it fits the budget. IF the flight arrives late, you MUST include the exact phrase: \"This is a full-service hotel with 24-hour late check-in support.\"]\n---END OF OUTPUT---",
           "maxIterations": 20
@@ -314,12 +284,7 @@
           "id": "biEXWtHpc45eoKvG",
           "name": "OpenAI account 3"
         }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
+      }null   "__rl": true,
           "value": "gpt-4o-mini",
           "mode": "list",
           "cachedResultName": "gpt-4o-mini"
@@ -340,12 +305,7 @@
           "id": "biEXWtHpc45eoKvG",
           "name": "OpenAI account 3"
         }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Evaluate the proposed travel itinerary against the absolute system constraints.\n\nSystem Constraints:\n- Maximum Total Budget: {{ $('Extract Data').item.json.output.budget }} \n- Required Dates: {{ $('Extract Data').item.json.output.departure_date }} to {{ $('Extract Data').item.json.output.return_date }}\n\nHere are the exact proposals from the sub-agents:\n\n---FLIGHT AGENT OUTPUT---\n{{ $node[\"flight schedule agent\"].json.output }}\n\n---RESORT AGENT OUTPUT---\n{{ $node[\"resort agent\"].json.output }}\n\n---ACTIVITIES AGENT OUTPUT---\n{{ $node[\"Itinerary & Allowance Planner\"].json.output }}\n\nExecute your evaluation steps, calculate the total cost, and output the final JSON verdict.",
+      }null "text": "=Evaluate the proposed travel itinerary against the absolute system constraints.\n\nSystem Constraints:\n- Maximum Total Budget: {{ $('Extract Data').item.json.output.budget }} \n- Required Dates: {{ $('Extract Data').item.json.output.departure_date }} to {{ $('Extract Data').item.json.output.return_date }}\n\nHere are the exact proposals from the sub-agents:\n\n---FLIGHT AGENT OUTPUT---\n{{ $node[\"flight schedule agent\"].json.output }}\n\n---RESORT AGENT OUTPUT---\n{{ $node[\"resort agent\"].json.output }}\n\n---ACTIVITIES AGENT OUTPUT---\n{{ $node[\"Itinerary & Allowance Planner\"].json.output }}\n\nExecute your evaluation steps, calculate the total cost, and output the final JSON verdict.",
         "hasOutputParser": true,
         "options": {
           "systemMessage": "You are an absolute, strict Operations Judge. You evaluate travel itineraries. You have no flexibility.\n\nGLOBAL RULE: Do not exceed the Maximum Total Budget provided in the system constraints.\n\nEXECUTION STEPS:\n1. Locate the JSON headers provided by the \"Flight Agent,\" \"Resort Agent,\" and \"Activities Agent.\"\n2. Extract the three costs: selected_flight_cost, selected_resort_cost, and total_activities_allowance.\n3. Add those three numbers together. This is the total_calculated_cost.\n4. Check the arrival_time from the Flight Agent. If it arrives late at night, verify the Resort Agent chose a suitable hotel. RULE: If the Resort Agent selected a property with a star_rating of 3 or higher, you MUST automatically accept it as a full-service hotel suitable for late arrivals.\n\nDECISION LOGIC:\n- IF total_calculated_cost <= Maximum Total Budget AND timelines make sense -> set deal_finalized to true.\n\n- IF total_calculated_cost > Maximum Total Budget -> set deal_finalized to false.\n\n- IF timelines conflict -> set deal_finalized to false.\n\nFEEDBACK GENERATION (CRITICAL):\n- If deal_finalized is true: Your feedback MUST simply be: \"Approved. All constraints met.\" Do not give warnings or advice to the agents.\n\n- If deal_finalized is false: Your feedback MUST explicitly target the agent that needs to change and include the math. (Example: \"Total calculated cost is 11000. Maximum budget is 10000. Rejecting. Resort Agent: Downgrade to save at least 1000.\")\n\n- NEVER write the word \"Approved\" if deal_finalized is false.\n\nOutput ONLY the requested JSON schema. Do not output conversational text.",
@@ -394,12 +354,7 @@
           "id": "goWukVd5paoNfoDV",
           "name": "SerpAPI account"
         }
-      }
-    },
-    {
-      "parameters": {
-        "url": "https://serpapi.com/search",
-        "authentication": "predefinedCredentialType",
+      }null "authentication": "predefinedCredentialType",
         "nodeCredentialType": "serpApi",
         "sendQuery": true,
         "queryParameters": {
@@ -452,12 +407,7 @@
           "id": "goWukVd5paoNfoDV",
           "name": "SerpAPI account"
         }
-      }
-    },
-    {
-      "parameters": {
-        "toolDescription": "Fetches resort and hotel data from google hotels via SerpAPI",
-        "url": "https://serpapi.com/search",
+      }null "url": "https://serpapi.com/search",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "serpApi",
         "sendQuery": true,
@@ -501,12 +451,7 @@
           "id": "goWukVd5paoNfoDV",
           "name": "SerpAPI account"
         }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Destination: {{ $node[\"Convert to Airport Codes\"].json.destination }}\nDays in Destination: {{ $('Convert to Airport Codes').item.json.return_date }} - {{ $('Convert to Airport Codes').item.json.departure_date }}\nRemaining Budget for Activities & Food: {{ $('Convert to Airport Codes').item.json.budget- $node[\"flight schedule agent\"].json.selected_flight_cost - $node[\"resort agent\"].json.selected_resort_cost }}\nPreferences: {{ $node[\"Convert to Airport Codes\"].json.activities }}\n\nJUDGE FEEDBACK: {{ $json.feedback || \"None\" }}",
+      }null "text": "=Destination: {{ $node[\"Convert to Airport Codes\"].json.destination }}\nDays in Destination: {{ $('Convert to Airport Codes').item.json.return_date }} - {{ $('Convert to Airport Codes').item.json.departure_date }}\nRemaining Budget for Activities & Food: {{ $('Convert to Airport Codes').item.json.budget- $node[\"flight schedule agent\"].json.selected_flight_cost - $node[\"resort agent\"].json.selected_resort_cost }}\nPreferences: {{ $node[\"Convert to Airport Codes\"].json.activities }}\n\nJUDGE FEEDBACK: {{ $json.feedback || \"None\" }}",
         "options": {
           "systemMessage": "You are the Activities & Excursion Agent. Your job is to finalize the travel plan using the remaining budget.\n\nSTEP 1: Analyze the Budget\n- Look at the \"Remaining Budget\" in the user prompt. \n- Divide this by the \"Days in Destination\" to get a \"Daily Allowance\" (e.g., if $2784 is left for 10 days, the allowance is ~$278/day).\n\nSTEP 2: Select Attractions\n- Use the TripAdvisor tool to search the destination based on the user's preferences.\n- Select 4 to 6 top attractions (like forts, beaches, or temples) from the API output.\n\nSTEP 3: Output Format\nYou MUST output the final JSON header for the Judge, followed by the itinerary. Because the tool does not provide exact prices, you will allocate a \"Total Activities & Food Allowance\" that is slightly below the Remaining Budget.\n\nCRITICAL: Always calculate your Final Allowance based on the current Remaining Budget provided in this specific prompt. If the Judge gave you specific feedback in the previous round, adjust your daily allowance strategy accordingly.\n\n---START OF OUTPUT---\n{\n  \"total_activities_allowance\": [Insert a number slightly lower than the Remaining Budget],\n  \"daily_allowance\": [Total Allowance / Days],\n  \"selected_attractions\": [\"Name 1\", \"Name 2\"]\n}\n\nActivities & Itinerary Proposal:\nWith a remaining budget of $[Remaining Budget], I have allocated a total allowance of $[total_activities_allowance] ($[daily_allowance] per day) for food, local transport, and activities.\n\nRecommended Attractions (Based on TripAdvisor):\n1. [Attraction Title] - Rating: [Rating]\n   - *Details:* [Extract from highlighted_review]\n2. [Attraction Title]...\n---END OF OUTPUT---",
           "maxIterations": 20
@@ -560,12 +505,7 @@
           "id": "biEXWtHpc45eoKvG",
           "name": "OpenAI account 3"
         }
-      }
-    },
-    {
-      "parameters": {
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"deal_finalized\": {\n      \"type\": \"boolean\",\n      \"description\": \"Output true ONLY if total_calculated_cost is 8000 or less AND timelines do not overlap. Otherwise, false.\"\n    },\n    \"total_calculated_cost\": {\n      \"type\": \"number\",\n      \"description\": \"The exact mathematical sum of the flight, resort, and activities costs.\"\n    },\n    \"feedback\": {\n      \"type\": \"string\",\n      \"description\": \"If deal_finalized is false, state exactly which agent needs to cut costs or change times. If true, write 'Approved'.\"\n    }\n  },\n  \"required\": [\"deal_finalized\", \"total_calculated_cost\", \"feedback\"]\n}"
+      }null "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"deal_finalized\": {\n      \"type\": \"boolean\",\n      \"description\": \"Output true ONLY if total_calculated_cost is 8000 or less AND timelines do not overlap. Otherwise, false.\"\n    },\n    \"total_calculated_cost\": {\n      \"type\": \"number\",\n      \"description\": \"The exact mathematical sum of the flight, resort, and activities costs.\"\n    },\n    \"feedback\": {\n      \"type\": \"string\",\n      \"description\": \"If deal_finalized is false, state exactly which agent needs to cut costs or change times. If true, write 'Approved'.\"\n    }\n  },\n  \"required\": [\"deal_finalized\", \"total_calculated_cost\", \"feedback\"]\n}"
       },
       "id": "6dfde718-dd7a-4a39-a034-c41428c86d21",
       "name": "Structured Parser1",
@@ -1034,4 +974,4 @@
   },
   "id": "C8wDPGC0R16oLz_AqMy4h",
   "tags": []
-}
+}null
