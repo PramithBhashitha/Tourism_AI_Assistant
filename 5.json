@@ -1,0 +1,1037 @@
+{
+  "name": "chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "availableInChat": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -4800,
+        -368
+      ],
+      "id": "226aa48d-ff7a-4807-bdbe-17e446ba49f2",
+      "name": "When chat message received",
+      "webhookId": "cf980f48-eb04-4234-aa8e-9dcee2775e07"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -4448,
+        -144
+      ],
+      "id": "1a90e193-a0c8-4b84-86eb-6e6584c69f2b",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -4576,
+        -144
+      ],
+      "id": "f4f48555-4f87-46cb-b449-7f7882956cda",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "🏨 Role: Travel Receptionist AI\nYou are a friendly, highly professional Travel Receptionist AI. Your primary function is to warmly greet users, systematically collect their vacation requirements, and permanently record those details into a Google Document.\n\n🎯 Core Objective\nYou must gather and finalize all of the following user preferences:\n\nOrigin (from which city you start from)\n\nDestination (for which city you want to go)\n\nTimeline (ask about departure and return dates)\n\nParty Details (Number of travelers, plus any specific accessibility or dietary needs)\n\npersonal information (watsapp number,email)\n\nBudget (Total budget range)\n\nActivities (Preferred excursions, pacing, and interests)\n\n⚙️ Operational Protocol\nFollow these steps in exact order:\n\nGather: Converse naturally with the user to collect all missing details from the Core Objective list. Do not proceed until all points are answered. Do not ask same questin again and again from user ask one time then proceed.\n\nFormat: Once all information is gathered, structure a comprehensive summary using clear sections: Origin, Destination, Dates, Travelers, Personal infomations, Budget, and Activities.\n\nExecute Tool: You MUST use the connected Google Docs Tool to write this exact formatted summary directly into the document. \n\n\nConfirm: After the tool successfully writes to the document, reply to the user confirming that their vacation profile has been safely stored. you can only display this confirmation at the end of the process. do not expose any data in the UI.\n\n🗣️ Tone & Style\nMaintain a warm, welcoming, and helpful demeanor.\n\nBe conversational but efficient.\n\n⚠️ CRITICAL INSTRUCTION\nDo not just summarize the plan in the chat UI. Your task - only complete when you have actively triggered the Google Docs Tool to write the data.\n",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -4464,
+        -368
+      ],
+      "id": "d52aa8ab-da44-491b-b093-68700ca1c70b",
+      "name": "receptionist"
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -4320,
+        -144
+      ],
+      "id": "73063e44-81e3-4976-95ab-1e865e3e2ec5",
+      "name": "create doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "lDPp29REBJalefCk",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('documentId', 'The document ID from the created Google Doc') }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "object": "={{ \"text\" }}",
+              "action": "={{ \"insert\" }}",
+              "insertSegment": "={{ \"body\" }}",
+              "locationChoice": "={{ \"endOfSegmentLocation\" }}",
+              "index": 0,
+              "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('content', 'The vacation plan content to write to the document') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -4192,
+        -144
+      ],
+      "id": "692b7d62-551e-4dee-9cad-dc78192b5c29",
+      "name": "update doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "lDPp29REBJalefCk",
+          "name": "Google Docs OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3264,
+        -144
+      ],
+      "id": "3f465231-67a6-470a-919f-cf6dd0283b69",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Task: Find the optimal flight for this trip.\nOrigin: {{ $json.origin_code }}\nDestination: {{ $json.destination_code }}\nDeparture: {{ $json.departure_date }}\nReturn: {{ $json.return_date }}\nPassengers: {{ $json.travelers.count }}\nTrip Budget: {{ $json.budget }}\n\nJUDGE FEEDBACK FROM PREVIOUS ROUND: {{ $json.feedback || \"None. This is the first pass.\" }}",
+        "options": {
+          "systemMessage": "You are the Flight Optimization Agent for a Multi-Agent travel planning system. \nYour task is to use the HTTP Request tool (SerpAPI) to fetch flights and select the SINGLE BEST option for the user.\n\nCRITICAL INSTRUCTION - HANDLING JUDGE FEEDBACK:\nLook at the \"JUDGE FEEDBACK FROM PREVIOUS ROUND\" in the user prompt.\n\nSTEP 1: IS THE FEEDBACK FOR YOU?\n- If the feedback explicitly directs the \"Resort Agent\" or \"Activities Agent\" to change, you MUST NOT change your selection. Output the exact same flight, cost, and JSON header you used in the previous round.\n\nSTEP 2: IF THE FEEDBACK IS FOR YOU (OR IS \"NONE\"):\n- If \"None\": Select the flight that offers the best balance of low price and short duration.\n- If the feedback says \"Over Budget\" or \"Price too high\": You MUST select a cheaper flight than you did last time, even if it has a long layover.\n- If the feedback says \"Arrival too late\": You MUST select a flight that arrives earlier in the day.\n\nOUTPUT FORMATTING RULES:\nYou must output your final selection in two parts. First, a JSON block containing the raw data for the Judge. Second, the formatted text for the final itinerary.\n\n---START OF OUTPUT---\n{\n  \"selected_flight_cost\": [Extract just the total price as a number, e.g., 1958],\n  \"arrival_time\": \"[Extract the arrival time of the final leg, e.g., 2026-05-16T08:10:00]\",\n  \"carbon_emissions\": [Extract the this_flight carbon value as a number]\n}\n\nFlight Proposal:\nTrip type: Round trip\nRoute: [ORIGIN_CODE] → [DESTINATION_CODE]\nTravel dates: Depart [YYYY-MM-DD], Return [YYYY-MM-DD]\nPassengers: [COUNT]\n\nSelected Flight: [AIRLINE]\nTotal price: $[PRICE]\nTotal trip duration: [HH]h [MM]m ([TOTAL_MINUTES] minutes)\n\nLeg 1\n[AIRLINE] ([FLIGHT_NUMBER])\nDeparture: [AIRPORT_NAME] ([CODE]) — [DATE TIME]\nArrival: [AIRPORT_NAME] ([CODE]) — [DATE TIME]\nDuration: [HH]h [MM]m \nAircraft: [AIRCRAFT] | Class: [CLASS]\n\n[Include Layover and Leg 2 if applicable]\n---END OF OUTPUT---",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -3216,
+        -368
+      ],
+      "id": "576d3705-a2cf-4ae4-a75c-82768856a571",
+      "name": "flight schedule agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "df94b639-2350-4133-994a-982fcbffb4cb",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3984,
+        -144
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"origin\": { \"type\": [\"string\", \"null\"] },\n    \"destination\": { \"type\": [\"string\", \"null\"] },\n    \"departure_date\": { \"type\": [\"string\", \"null\"], \"format\": \"date\" },\n    \"return_date\": { \"type\": [\"string\", \"null\"], \"format\": \"date\" },\n    \"budget\": { \"type\": [\"string\", \"null\"] },\n    \"activities\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"travelers\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"count\": { \"type\": [\"integer\", \"null\"] },\n        \"accessibility_needs\": { \"type\": [\"string\", \"null\"] },\n        \"dietary_needs\": { \"type\": [\"string\", \"null\"] }\n      }\n    },\n    \"whatsapp\": { \"type\": [\"string\", \"null\"] },\n    \"email\": { \"type\": [\"string\", \"null\"], \"format\": \"email\" }\n  }\n}",
+        "autoFix": true
+      },
+      "id": "f94177e1-1bf0-4cb2-bc55-ecd452ecf7f0",
+      "name": "Structured Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -3856,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cityToIATA = {\n  // India\n  \"new delhi\": \"DEL\",\n  \"delhi\": \"DEL\",\n  \"mumbai\": \"BOM\",\n  \"bangalore\": \"BLR\",\n  \"chennai\": \"MAA\",\n  \"kolkata\": \"CCU\",\n  \"hyderabad\": \"HYD\",\n  \"pune\": \"PNQ\",\n  \"ahmedabad\": \"AMD\",\n  \"jaipur\": \"JAI\",\n  \"goa\": \"GOI\",\n  \n  // Sri Lanka - all map to CMB\n  \"sri lanka\": \"CMB\",\n  \"colombo\": \"CMB\",\n  \"matara\": \"CMB\",\n  \"jaffna\": \"CMB\",\n  \"kandy\": \"CMB\",\n  \"galle\": \"CMB\",\n  \"negombo\": \"CMB\",\n  \"trincomalee\": \"CMB\",\n  \n  // Australia\n  \"perth\": \"PER\",\n  \"sydney\": \"SYD\",\n  \"melbourne\": \"MEL\",\n  \"brisbane\": \"BNE\",\n  \n  // Other major cities\n  \"singapore\": \"SIN\",\n  \"kuala lumpur\": \"KUL\",\n  \"bangkok\": \"BKK\",\n  \"dubai\": \"DXB\",\n  \"london\": \"LHR\",\n  \"new york\": \"JFK\",\n  \"los angeles\": \"LAX\"\n};\n\nfunction getIATACode(location) {\n  if (!location) return null;\n  \n  const normalized = location.toLowerCase().trim();\n  \n  // Check if already an IATA code (3 uppercase letters)\n  if (/^[A-Z]{3}$/.test(location)) {\n    return location;\n  }\n  \n  // Look up in mapping\n  return cityToIATA[normalized] || null;\n}\n\nconst data = $input.first().json.output;\n\nconst originCode = getIATACode(data.origin);\nconst destinationCode = getIATACode(data.destination);\n\nreturn {\n  ...data,\n  origin_code: originCode,\n  destination_code: destinationCode\n};"
+      },
+      "id": "47ec1d78-2100-467e-b065-0b1f3b43bc52",
+      "name": "Convert to Airport Codes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3488,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $(\"When chat message received\").item.json.chatInput }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a strict data extraction assistant. Extract vacation details to match the schema.\n\nDates: If only a month is mentioned (e.g., \"June\"), default the departure_date to the first day of that month (e.g., \"2026-06-01\") and return_date to null unless a duration is specified. If no date is mentioned, output null.\n\nEmails: If no email is provided, output null.\n\nTravelers: If \"family\" or \"group\" is mentioned without a count, output null for count. Never output a string for count.\n\nStrict Rule: Output ONLY valid JSON matching the schema. Never wrap your response in markdown blocks like ```json. All missing fields must be null."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "e57f8ff0-0cdf-4572-bb47-b19e34296987",
+      "name": "Extract Data",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -3952,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "961f1d5e-6cec-432c-acc0-b537b7d04109",
+      "name": "OpenAI Chat Model3 (Auto-fix)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -3776,
+        64
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Destination: {{ $node[\"Convert to Airport Codes\"].json.destination }}\nDates: {{ $node[\"Convert to Airport Codes\"].json.departure_date }} to {{ $node[\"Convert to Airport Codes\"].json.return_date }}\nTravelers: {{ $node[\"Convert to Airport Codes\"].json.travelers.count }}\nTotal Trip Budget: {{ $node[\"Convert to Airport Codes\"].json.budget }}\n\nPREVIOUS AGENT DECISION (FLIGHT):\n{{ $node[\"flight schedule agent\"].json.output }}\n\nJUDGE FEEDBACK: {{ $json.feedback || \"None\" }}",
+        "options": {
+          "systemMessage": "You are the Resort Negotiation Agent. Your goal is to select the BEST accommodation that fits the REMAINING budget.\n\nSTEP 1: Calculate Remaining Budget\n- Read the \"Selected Flight\" cost from the Flight Agent's proposal.\n- Subtract that cost from the Total Trip Budget. This is your \"Resort & Activities Ceiling.\"\n\nSTEP 2: Selection Logic\n- Use your tool to find properties in the destination.\n- Filter out any property where the \"total_rate\" exceeds 70% of your remaining budget (leave room for the Activities Agent!).\n- If \"Judge Feedback\" says \"Over Budget,\" you MUST select a cheaper property (e.g., a Villa or a 3-star hotel instead of a 5-star resort).\n- If the Flight arrives late (after 20:00), prioritize properties with a 24-hour front desk. You MUST explicitly state in your output that it is a \"full-service hotel\" so the Judge knows it is safe for late arrivals.\n\nSTEP 3: Output Format\nYou MUST provide a JSON header for the Judge, followed by the formatted proposal.\n\nCRITICAL: Read the feedback carefully. If the Judge explicitly directs its feedback to the \"Flight Agent\" or \"Activities Agent\", you MUST NOT change your selection. Output the exact same hotel, cost, and JSON header you used in the previous round.\n\n---START OF OUTPUT---\n{\n  \"selected_resort_cost\": [Total price for the full stay as a number],\n  \"property_name\": \"[Name]\",\n  \"star_rating\": [Number],\n  \"remaining_for_activities\": [Remaining Budget - Resort Cost]\n}\n\nAccommodation Proposal:\n1. [Hotel Name] (Clickable Link)\n[Image HTML]\n- Rating: [Rating]\n- Total Stay Cost: $[TOTAL_PRICE]\n- Why this fits: [Explain how it fits the budget. IF the flight arrives late, you MUST include the exact phrase: \"This is a full-service hotel with 24-hour late check-in support.\"]\n---END OF OUTPUT---",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2752,
+        -496
+      ],
+      "id": "18c76930-0e69-46c2-a6d8-aeb0ff4fab5d",
+      "name": "resort agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2800,
+        -272
+      ],
+      "id": "0491b0bd-98b2-4aca-af8f-587998346489",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2336,
+        -272
+      ],
+      "id": "ff3cef0e-8fd6-4135-993f-c9bca5a741b3",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Evaluate the proposed travel itinerary against the absolute system constraints.\n\nSystem Constraints:\n- Maximum Total Budget: {{ $('Extract Data').item.json.output.budget }} \n- Required Dates: {{ $('Extract Data').item.json.output.departure_date }} to {{ $('Extract Data').item.json.output.return_date }}\n\nHere are the exact proposals from the sub-agents:\n\n---FLIGHT AGENT OUTPUT---\n{{ $node[\"flight schedule agent\"].json.output }}\n\n---RESORT AGENT OUTPUT---\n{{ $node[\"resort agent\"].json.output }}\n\n---ACTIVITIES AGENT OUTPUT---\n{{ $node[\"Itinerary & Allowance Planner\"].json.output }}\n\nExecute your evaluation steps, calculate the total cost, and output the final JSON verdict.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an absolute, strict Operations Judge. You evaluate travel itineraries. You have no flexibility.\n\nGLOBAL RULE: Do not exceed the Maximum Total Budget provided in the system constraints.\n\nEXECUTION STEPS:\n1. Locate the JSON headers provided by the \"Flight Agent,\" \"Resort Agent,\" and \"Activities Agent.\"\n2. Extract the three costs: selected_flight_cost, selected_resort_cost, and total_activities_allowance.\n3. Add those three numbers together. This is the total_calculated_cost.\n4. Check the arrival_time from the Flight Agent. If it arrives late at night, verify the Resort Agent chose a suitable hotel. RULE: If the Resort Agent selected a property with a star_rating of 3 or higher, you MUST automatically accept it as a full-service hotel suitable for late arrivals.\n\nDECISION LOGIC:\n- IF total_calculated_cost <= Maximum Total Budget AND timelines make sense -> set deal_finalized to true.\n\n- IF total_calculated_cost > Maximum Total Budget -> set deal_finalized to false.\n\n- IF timelines conflict -> set deal_finalized to false.\n\nFEEDBACK GENERATION (CRITICAL):\n- If deal_finalized is true: Your feedback MUST simply be: \"Approved. All constraints met.\" Do not give warnings or advice to the agents.\n\n- If deal_finalized is false: Your feedback MUST explicitly target the agent that needs to change and include the math. (Example: \"Total calculated cost is 11000. Maximum budget is 10000. Rejecting. Resort Agent: Downgrade to save at least 1000.\")\n\n- NEVER write the word \"Approved\" if deal_finalized is false.\n\nOutput ONLY the requested JSON schema. Do not output conversational text.",
+          "maxIterations": 10
+        }
+      },
+      "id": "cc217171-1105-4cf3-ae2d-ae116be2b425",
+      "name": "Judge Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1824,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "serpApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "tripadvisor"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Convert to Airport Codes').item.json.destination }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -2080,
+        -272
+      ],
+      "id": "f111ea1f-4a27-46fb-991f-e2b6e546e441",
+      "name": "HTTP Request3",
+      "credentials": {
+        "serpApi": {
+          "id": "goWukVd5paoNfoDV",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "serpApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google_flights"
+            },
+            {
+              "name": "departure_id",
+              "value": "={{ $('Convert to Airport Codes').item.json.origin_code }}"
+            },
+            {
+              "name": "arrival_id",
+              "value": "={{ $('Convert to Airport Codes').item.json.destination_code }}"
+            },
+            {
+              "name": "outbound_date",
+              "value": "={{ $('Extract Data').item.json.output.departure_date }}"
+            },
+            {
+              "name": "return_date",
+              "value": "={{ $('Extract Data').item.json.output.return_date }}"
+            },
+            {
+              "name": "adults",
+              "value": "={{ $('Extract Data').item.json.output.travelers.count }}"
+            },
+            {
+              "name": "currency",
+              "value": "USD"
+            },
+            {
+              "name": "multi_city_json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -3008,
+        -144
+      ],
+      "id": "74129786-f54a-42aa-98a5-f53f51863667",
+      "name": "flight tool",
+      "credentials": {
+        "serpApi": {
+          "id": "goWukVd5paoNfoDV",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Fetches resort and hotel data from google hotels via SerpAPI",
+        "url": "https://serpapi.com/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "serpApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google_hotels"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Convert to Airport Codes').item.json.destination }} Resorts"
+            },
+            {
+              "name": "check_in_date",
+              "value": "={{ $('Convert to Airport Codes').item.json.departure_date }}"
+            },
+            {
+              "name": "check_out_date",
+              "value": "={{ $('Convert to Airport Codes').item.json.return_date }}"
+            },
+            {
+              "name": "adults",
+              "value": "={{ $('Convert to Airport Codes').item.json.travelers.count }}"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -2544,
+        -272
+      ],
+      "id": "7ff36c18-e981-409f-aa05-ec2a9cd6216d",
+      "name": "resort tool",
+      "credentials": {
+        "serpApi": {
+          "id": "goWukVd5paoNfoDV",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Destination: {{ $node[\"Convert to Airport Codes\"].json.destination }}\nDays in Destination: {{ $('Convert to Airport Codes').item.json.return_date }} - {{ $('Convert to Airport Codes').item.json.departure_date }}\nRemaining Budget for Activities & Food: {{ $('Convert to Airport Codes').item.json.budget- $node[\"flight schedule agent\"].json.selected_flight_cost - $node[\"resort agent\"].json.selected_resort_cost }}\nPreferences: {{ $node[\"Convert to Airport Codes\"].json.activities }}\n\nJUDGE FEEDBACK: {{ $json.feedback || \"None\" }}",
+        "options": {
+          "systemMessage": "You are the Activities & Excursion Agent. Your job is to finalize the travel plan using the remaining budget.\n\nSTEP 1: Analyze the Budget\n- Look at the \"Remaining Budget\" in the user prompt. \n- Divide this by the \"Days in Destination\" to get a \"Daily Allowance\" (e.g., if $2784 is left for 10 days, the allowance is ~$278/day).\n\nSTEP 2: Select Attractions\n- Use the TripAdvisor tool to search the destination based on the user's preferences.\n- Select 4 to 6 top attractions (like forts, beaches, or temples) from the API output.\n\nSTEP 3: Output Format\nYou MUST output the final JSON header for the Judge, followed by the itinerary. Because the tool does not provide exact prices, you will allocate a \"Total Activities & Food Allowance\" that is slightly below the Remaining Budget.\n\nCRITICAL: Always calculate your Final Allowance based on the current Remaining Budget provided in this specific prompt. If the Judge gave you specific feedback in the previous round, adjust your daily allowance strategy accordingly.\n\n---START OF OUTPUT---\n{\n  \"total_activities_allowance\": [Insert a number slightly lower than the Remaining Budget],\n  \"daily_allowance\": [Total Allowance / Days],\n  \"selected_attractions\": [\"Name 1\", \"Name 2\"]\n}\n\nActivities & Itinerary Proposal:\nWith a remaining budget of $[Remaining Budget], I have allocated a total allowance of $[total_activities_allowance] ($[daily_allowance] per day) for food, local transport, and activities.\n\nRecommended Attractions (Based on TripAdvisor):\n1. [Attraction Title] - Rating: [Rating]\n   - *Details:* [Extract from highlighted_review]\n2. [Attraction Title]...\n---END OF OUTPUT---",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2288,
+        -496
+      ],
+      "id": "97e3c67e-6398-4c8b-8d79-32c13a9a41ab",
+      "name": "Itinerary & Allowance Planner"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -1744,
+        -272
+      ],
+      "id": "9bd9c0fe-1715-4c14-bf6c-dc640bd4d762",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "552122a1-f721-4b12-bde2-16f258acd530",
+      "name": "OpenAI Chat Model5",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1872,
+        -272
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "biEXWtHpc45eoKvG",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"deal_finalized\": {\n      \"type\": \"boolean\",\n      \"description\": \"Output true ONLY if total_calculated_cost is 8000 or less AND timelines do not overlap. Otherwise, false.\"\n    },\n    \"total_calculated_cost\": {\n      \"type\": \"number\",\n      \"description\": \"The exact mathematical sum of the flight, resort, and activities costs.\"\n    },\n    \"feedback\": {\n      \"type\": \"string\",\n      \"description\": \"If deal_finalized is false, state exactly which agent needs to cut costs or change times. If true, write 'Approved'.\"\n    }\n  },\n  \"required\": [\"deal_finalized\", \"total_calculated_cost\", \"feedback\"]\n}"
+      },
+      "id": "6dfde718-dd7a-4a39-a034-c41428c86d21",
+      "name": "Structured Parser1",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1616,
+        -272
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.deal_finalized }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "255bd76e-5fc1-4fa2-b45f-5b005f2a8d74"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6592efd2-d555-447a-b8d5-4a9ce07983a1",
+                    "leftValue": "={{ $json.output.deal_finalized }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1408,
+        -368
+      ],
+      "id": "8174d1de-7b30-4d1f-94b7-6e6295dbdbe6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23d7b962-0ed4-4678-9b53-f30a75426ad9",
+              "name": "output.deal_finalized",
+              "value": "={{ $json.output.deal_finalized }}",
+              "type": "boolean"
+            },
+            {
+              "id": "c5610219-af11-444b-b163-d16e5a7179cf",
+              "name": "output.feedback",
+              "value": "={{ $json.output.feedback }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1184,
+        -624
+      ],
+      "id": "4bb6f8e2-bacf-45bc-896d-b15aef7cf9d0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -3136,
+        -144
+      ],
+      "id": "46811481-7290-43e1-be3e-5c17b8c37306",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -2672,
+        -272
+      ],
+      "id": "31efbbf1-4e15-47fb-90ac-97277fa4c3b0",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -2208,
+        -272
+      ],
+      "id": "48dba6fb-5eea-448d-88dc-57958c9c6d52",
+      "name": "Simple Memory4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "receptionist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "receptionist",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "receptionist": {
+      "main": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create doc": {
+      "ai_tool": [
+        [
+          {
+            "node": "receptionist",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update doc": {
+      "ai_tool": [
+        [
+          {
+            "node": "receptionist",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "flight schedule agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Airport Codes": {
+      "main": [
+        [
+          {
+            "node": "flight schedule agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Data": {
+      "main": [
+        [
+          {
+            "node": "Convert to Airport Codes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3 (Auto-fix)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "flight schedule agent": {
+      "main": [
+        [
+          {
+            "node": "resort agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resort agent": {
+      "main": [
+        [
+          {
+            "node": "Itinerary & Allowance Planner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "resort agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Itinerary & Allowance Planner",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Judge Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Itinerary & Allowance Planner",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "flight tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "flight schedule agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resort tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "resort agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Itinerary & Allowance Planner": {
+      "main": [
+        [
+          {
+            "node": "Judge Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Judge Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Judge Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Judge Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "flight schedule agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "resort agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "Itinerary & Allowance Planner",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a74ab1e6-b690-4c2e-89b8-cd998b5769e0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d9a76c0159f1ef2a85e2f1e9546f7d20dd840fd714d90cb3d4e515d5b3d43849"
+  },
+  "id": "C8wDPGC0R16oLz_AqMy4h",
+  "tags": []
+}
